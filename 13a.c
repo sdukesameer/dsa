@@ -1,3 +1,5 @@
+
+//print all possible combination for n-rook problem
 #include<stdio.h>
 int N;
 void display(int arr[N][N]){//graphical representation

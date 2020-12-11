@@ -1,3 +1,4 @@
+//print all possible combination for n-bishop problem
 #include<stdio.h>
 int N;
 void display(int arr[N][N]){//graphical representation
@@ -38,17 +39,16 @@ int safe(int arr[N][N], int row, int col){//to check if the column is safe
             return 0;
     return 1;//else id safe 
 }
-void bishops(int arr[N][N], int n){
-    if(n>=N){
+void bishops(int arr[N][N], int n){//n is col no, initially its 0
+    if(n>=N){//print if a combination is found
         display(arr);
         return;
     }
-    for (int i = 0; i < N; i++)
-    {
+    for (int i = 0; i < N; i++){//surf accross rows
         if(safe(arr,i,n)){
             arr[i][n]=1;//if safe insert a rook
             bishops(arr,n+1);//then check if at next col its safe to place rook
-            arr[i][n]=0;//if on next col rooks can't be placed backtrack and remove rook from that location
+            arr[i][n]=0;//if on next col bishops can't be placed backtrack and remove rook from that location
         }
     }
 }
