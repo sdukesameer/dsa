@@ -32,6 +32,13 @@ int safe(int arr[N][N], int row, int col){
 void bishops(int arr[N][N], int c){
     if(c>=N){
         printboard(arr);
+        if(N>1){
+            int trs[N][N];
+            for (int i = 0; i < N; i++)//creating transpose of the array
+                for (int j = 0; j < N; j++)
+                    trs[j][i]=arr[i][j];
+            printboard(trs);
+        }
         return;
     }
     for (int i = 0; i < N; i++){

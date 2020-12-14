@@ -42,6 +42,13 @@ int safe(int arr[N][N], int row, int col){//to check if the column is safe
 void bishops(int arr[N][N], int n){//n is col no, initially its 0
     if(n>=N){//print if a combination is found
         display(arr);
+        if(N>1){
+            int trs[N][N];
+            for (int i = 0; i < N; i++)//creating transpose of the array
+                for (int j = 0; j < N; j++)
+                    trs[j][i]=arr[i][j];
+            display(trs);
+        }
         return;
     }
     for (int i = 0; i < N; i++){//surf accross rows

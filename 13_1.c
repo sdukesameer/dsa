@@ -1,4 +1,3 @@
-
 //print all possible combination for n-rook problem
 #include<stdio.h>
 int N;
@@ -36,6 +35,16 @@ int safe(int arr[N][N], int row, int col){//to check if the column is safe
 void rooks(int arr[N][N], int n){//n is col no, initially its 0
     if(n>=N){//best case, when all rooks are well placed
         display(arr);
+        int trs[N][N], t=0;
+        for (int i = 0; i < N; i++)//create transpose
+            for (int j = 0; j < N; j++)
+                trs[j][i]=arr[i][j];
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                if(trs[i][j]==arr[i][j])
+                    t++;
+        if(t!=(N*N))//check if array and its tranpose are not same
+            display(trs);
         return;
     }
     for (int i = 0; i < N; i++){//surf accross rows

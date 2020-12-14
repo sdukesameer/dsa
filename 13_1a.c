@@ -25,6 +25,16 @@ int safe(int arr[N][N], int row, int col){
 void rooks(int arr[N][N], int c){
     if(c>=N){
         printboard(arr);
+        int trs[N][N], t=0;
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                trs[j][i]=arr[i][j];
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                if(trs[i][j]==arr[i][j])
+                    t++;
+        if(t!=(N*N))
+            printboard(trs);
         return;
     }
     for (int i = 0; i < N; i++){
