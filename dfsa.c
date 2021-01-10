@@ -1,105 +1,110 @@
-#include <stdio.h>
-#include <stdlib.h>
-#define INFINITE 99999
-//cost between 2 adjacent vertices is taken as 1
+#include<stdio.h>
+#include<stdlib.h>
 typedef struct{
     int n;//number of vertices
-    char *V;//A,B,C ... vertices
-    int **wt;//2D array using pointers
-}grph;
+    int** mat;//array of pointers
+}gph;
 typedef struct{
-    int top;
-    int *vertex;// stack is taken here
+    int top;//topmost filled index
+    int* items;//stack for dfs
 }stk;
-void ip_Graph(grph *G){
-    int i,j,ans;
-    printf("Enter the number of vertices: ");
-    scanf("%d",&G->n);
-    getchar();
-    G->V=(char*)malloc(sizeof(char)*G->n);//initialising array of vertices (A,B,C,D...)
-    for(i=0;i<G->n;i++)
-        G->V[i]='A'+i;
-    G->wt=(int**)malloc(sizeof(int*)*G->n);//initialising 2D array of cost b/w i-th and j-th vertices
-    for(i=0;i<G->n;i++)
-        G->wt[i]=(int*)malloc(sizeof(int)*G->n);//individual row is initialised as a new array
-    for(i=0;i<G->n;i++)
-        for(j=0;j<G->n;j++){
-            printf("\nIs there any edge b/w %d and %d? (YES=1||NO=0): ",i+1,j+1);
-            scanf("%d",&ans);
-            if(ans==1){
-                printf("\nEnter edge cost b/w %d and %d: ",i+1,j+1);
-                scanf("%d",&G->wt[i][j]);
+void input(gph* g){
+    int i,j,f,x=1;
+    while(x){
+        printf("\nEnter the number of vertices: ");
+        scanf("%d",&g->n);
+        if(g->n>0)
+            x=0;
+        else
+            printf("Invalid input.\n");
+    }
+    g->mat=(int**) malloc(sizeof(int*)*g->n);
+    for(i=0;i<g->n;i++)
+        g->mat[i]=(int*)malloc(sizeof(int)*g->n);
+    for(i=0;i<g->n;i++)
+        for(j=0;j<g->n;j++)
+            g->mat[i][j]=-1;
+    for(i=0;i<g->n;i++)
+        for(j=0;j<g->n;j++){
+            if(g->mat[i][j]==1 || g->mat[i][j]==0)
+                continue;
+            if(i==j){
+                g->mat[i][j]=0;
+                continue;
             }
-            else
-                G->wt[i][j]=INFINITE;
+            x=1;
+            while(x){
+                printf("Is there an edge between %c and %c (Yes=1 & No=0): ",'A'+i,'A'+j);
+                scanf("%d",&f);
+                if(f==0 || f==1){
+                    g->mat[i][j]=f;
+                    g->mat[j][i]=f;
+                    x=0;
+                }
+                else
+                    printf("Invalid input.\n");
+            }
         }
 }
-void initialise_Stack(stk *s, int sz){
+void initialise(stk* s, int n){
     s->top=-1;
-    s->vertex=(int*)malloc(sizeof(int)*sz);
+    s->items=(int*)malloc(sizeof(int)*n);
 }
-void push(stk *s,int v){
-    s->vertex[++(s->top)]=v;
+void push(stk* s, int n){
+    s->items[++(s->top)]=n;
 }
-void pop(stk *s){
-    if(s->top==-1){
-        printf("\nEmpty Stack");
-        //return -99999;
-    }
-    else
-        s->vertex[(s->top)--];
+int peek(stk* s){
+    return s->items[s->top];
 }
-int peep(stk s){
-    if(s.top==-1){
-        printf("\nEmpty Stack");
-        return -99999;
-    }
-    else
-        return s.vertex[(s.top)];
+void pop(stk* s){
+    s->top--;
 }
-void DFS(grph G, int v){//v is the first node to be visited
+void dfs(gph g, int x){
     stk s;
-    int *visited;
-    int i,p,flag=0;
-    printf("\n");
-    initialise_Stack(&s,G.n);
-    visited=(int*)malloc(sizeof(int)*G.n);//creating an array to keep track of all visited vertices
-    for(i=0; i<G.n;i++)
+    initialise(&s,g.n);
+    int visited[g.n],i,f,t;
+    for(i=0;i<g.n;i++)
         visited[i]=0;
-    visited[v]=1;//first node is visited
-    push(&s,v);
-    printf("\nVisited %c ",G.V[peep(s)]);
-    while(s.top!=-1){//run loop until stack is empty
-        p=peep(s);//see the first vertex
-        flag=0;
-        for(i=0;i<G.n;i++){
-            if(G.wt[p][i]!=0&&G.wt[p][i]!=INFINITE&&visited[i]==0){//check for any adjacent unvisited vertex
-                push(&s,i);// insert any one vertex into stack and print that vertex
-                visited[i]=1;
-                printf("\nVisited %c ",G.V[peep(s)]);
-                flag=1;
-                break;
-            }
-        }
-        if(flag==0)//if the current vertex has no unvisited neighbours left then pop it out
+    printf("\nFollowing is the DFS Traversal (starting from %c): \n",'A'+x);
+    visited[x]=1;
+    printf("%c\t",'A'+x);
+    push(&s,x);
+    while(s.top!=-1){
+        f=peek(&s);//see top of stack
+        t=1;
+        for(i=0; i<g.n; i++)
+            if(g.mat[f][i])
+                if(!visited[i]){
+                    visited[i]=1;
+                    printf("%c\t",'A'+i);
+                    push(&s,i);
+                    t=0;//indicates new vertex found 
+                    break;
+                }
+        if(t)//if no new vertex found pop it
             pop(&s);
     }
-    free(visited);
-    printf("\n");
 }
-void free_Graph(grph *G){//freeing up space taken by graph
-    int i,j;
-    free(G->V);
-    for(i=0;i<G->n;i++)
-        free(G->wt[i]);
-    free(G->wt);
+void free_graph(gph* g){
+    for(int i=0; i<g->n; i++)
+        free(g->mat[i]);
+    free(g->mat);
 }
-void main(){
-    grph G;
-    ip_Graph(&G);
-    int x;
-    printf("\nEnter starting vertex: (A=1,B=2...) ");
-    scanf("%d",&x);
-    DFS(G,x-1);
-    free_Graph(&G);
+int main(){
+    gph g;
+    int f=1,x;
+    input(&g);
+    printf("\n\' If");
+    for(int i=0; i<g.n;i++)
+        printf(" %c=%d",'A'+i,i+1);
+    printf(" \'\nEnter the initial vertex: ");
+    while(f){
+        scanf("%d",&x);
+        if(x>0 && x<g.n+1)
+            f=0;
+        else
+            printf("Invalid input.\n");
+    }
+    dfs(g,x-1);
+    free_graph(&g);
 }

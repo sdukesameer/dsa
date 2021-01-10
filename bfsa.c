@@ -1,91 +1,105 @@
-#include <stdio.h>
-#include <stdlib.h>
-#define INFINITE 99999
-//edge cost has been taken as 1 b/w to neighbouring vertices
+#include<stdio.h>
+#include<stdlib.h>
 typedef struct{
     int n;//number of vertices
-    char *V;//A,B,C ... vertices
-    int **wt;//2D array using pointers
-}grph;
+    int** mat;//array of pointers
+}gph;
 typedef struct{
-    int front,rear;
-    int *vertex;//queue will be stored here
+    int end;//endmost filled index
+    int* items;//queue for bfs
 }que;
-void ip_Graph(grph *G){
-    int i,j,ans;
-    printf("Enter the number of vertices: ");
-    scanf("%d",&G->n);
-    getchar();
-    G->V=(char*)malloc(sizeof(char)*G->n);//initialising array of vertices (A,B,C,D...)
-    for(i=0;i<G->n;i++)
-        G->V[i]='A'+i;
-    G->wt=(int**)malloc(sizeof(int*)*G->n);//initialising 2D array of cost b/w i-th and j-th vertices
-    for(i=0;i<G->n;i++)
-        G->wt[i]=(int*)malloc(sizeof(int)*G->n);//individual row is initialised as a new array
-    for(i=0;i<G->n;i++)
-        for(j=0;j<G->n;j++){
-            printf("\nIs there any edge b/w %d and %d? (YES=1||NO=0): ",i+1,j+1);
-            scanf("%d",&ans);
-            if(ans==1){
-                printf("\nEnter edge cost b/w %d and %d: ",i+1,j+1);
-                scanf("%d",&G->wt[i][j]);
+void input(gph* g){
+    int i,j,f,x=1;
+    while(x){
+        printf("\nEnter the number of vertices: ");
+        scanf("%d",&g->n);
+        if(g->n>0)
+            x=0;
+        else
+            printf("Invalid input.\n");
+    }
+    g->mat=(int**) malloc(sizeof(int*)*g->n);
+    for(i=0;i<g->n;i++)
+        g->mat[i]=(int*)malloc(sizeof(int)*g->n);
+    for(i=0;i<g->n;i++)
+        for(j=0;j<g->n;j++)
+            g->mat[i][j]=-1;
+    for(i=0;i<g->n;i++)
+        for(j=0;j<g->n;j++){
+            if(g->mat[i][j]==1 || g->mat[i][j]==0)
+                continue;
+            if(i==j){
+                g->mat[i][j]=0;
+                continue;
             }
-            else
-                G->wt[i][j]=INFINITE;
+            x=1;
+            while(x){
+                printf("Is there an edge between %c and %c (Yes=1 & No=0): ",'A'+i,'A'+j);
+                scanf("%d",&f);
+                if(f==0 || f==1){
+                    g->mat[i][j]=f;
+                    g->mat[j][i]=f;
+                    x=0;
+                }
+                else
+                    printf("Invalid input.\n");
+            }
         }
 }
-void initialise_Queue(que *q, int sz){
-    q->front=q->rear=-1;
-    q->vertex=(int*)malloc(sizeof(int)*sz);//creating queue
+void initialiseQueue(que* q, int n){
+    q->end=-1;
+    q->items=(int*) malloc(sizeof(int)*n);
 }
-void ins(que *q,int v){
-    q->vertex[++(q->rear)]=v;
+void enqueue(que* q, int n){
+    q->items[++(q->end)]=n;
 }
-int del(que *q){
-    if(q->front==q->rear){
-        printf("\nEmpty Queue");
-        q->front=q->rear=-1;
-        return -99999;
-    }
-    else
-        return q->vertex[++(q->front)];
+int dequeue(que* q){
+    int ret=q->items[0];
+    for(int i=0; i<q->end; i++)
+        q->items[i]=q->items[i+1];
+    q->end--;
+    return ret;
 }
-void BFS(grph G, int v){//v is the first node to be visited
+void bfs(gph g, int s){
     que q;
-    int *visited;
-    int i,p;
-    printf("\n");
-    initialise_Queue(&q,G.n);
-    visited=(int*)malloc(sizeof(int)*G.n);//creating an array to keep track of visited nodes
-    for(i=0; i<G.n;i++)
+    initialiseQueue(&q,g.n);
+    int visited[g.n],i,f;
+    for(i=0;i<g.n;i++)
         visited[i]=0;
-    visited[v]=1;//starting node has been visited
-    ins(&q,v);//push starting node into queue
-    while(q.front!=q.rear){//loop will run until queue is empty
-        p=del(&q);//remove vertex from queue after it has been explored
-        printf("\nVisited %c ",G.V[p]);
-        for(i=0;i<G.n;i++)//run a loop to find the neighbouring vertices of current node which are unvisited
-            if(G.wt[p][i]!=0&&G.wt[p][i]!=INFINITE&&visited[i]==0){
-                ins(&q,i);//put all encountered neighbouring vertices into queue
-                visited[i]=1;
-            }
+    visited[s]=1;
+    enqueue(&q,s);
+    printf("\nFollowing is the BFS Traversal (starting from %c): \n",'A'+s);
+    while(q.end!=-1){
+        f=dequeue(&q);
+        printf("%c\t",'A'+f);
+        for (i = 0; i < g.n; i++)
+            if(g.mat[f][i])
+                if(!visited[i]){
+                    visited[i]=1;
+                    enqueue(&q,i);//add all vertexes in queue
+                }
     }
-    free(visited);
-    printf("\n");
 }
-void free_Graph(grph *G){//free up space
-    int i,j;
-    free(G->V);
-    for(i=0;i<G->n;i++)
-        free(G->wt[i]);
-    free(G->wt);
+void free_graph(gph* g){
+    for(int i=0; i<g->n; i++)
+        free(g->mat[i]);
+    free(g->mat);
 }
-void main(){
-    grph G;
-    ip_Graph(&G);
-    int x;
-    printf("Enter starting vertex: (A=1,B=2...) ");//enter vertex from where search is to be started
-    scanf("%d",&x);
-    BFS(G,x-1);
-    free_Graph(&G);
+int main(){
+    gph g;
+    int f=1,s;
+    input(&g);
+    printf("\n\' If");
+    for(int i=0; i<g.n;i++)
+        printf(" %c=%d",'A'+i,i+1);
+    printf(" \'\nEnter the initial vertex: ");
+    while(f){
+        scanf("%d",&s);
+        if(s>0 && s<g.n+1)
+            f=0;
+        else
+            printf("Invalid input.\n");
+    }
+    bfs(g,s-1);
+    free_graph(&g);
 }
