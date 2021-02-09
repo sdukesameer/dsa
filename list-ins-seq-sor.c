@@ -1,3 +1,9 @@
+/*Declare the structure of a single pointer Linked List containing integers.
+Perform the necessary initialization and the following operation on it.
+(i) Insert integer in sorted order,
+(ii) Insert integer in sequential order and
+(iii) Display the content of a linked list.
+Use of global variable and pointers are not allowed.*/
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct a

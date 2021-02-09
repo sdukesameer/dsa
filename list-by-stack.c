@@ -1,3 +1,9 @@
+/*Implement STACK using linked list with the following 6 function:
+i. Define structure of STACK.
+ii. Initialization.
+iii. PUSH some integers.
+iv. POP some integers.
+v. Check the STACK empty or not.*/
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct s

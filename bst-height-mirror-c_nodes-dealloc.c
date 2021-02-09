@@ -1,3 +1,12 @@
+/*Write recursive C functions to implement the followings:
+(i) Determine the height of the Binary Search Tree
+(ii) Construct the Binary Search Tree which is mirror image of the given Binary Search Tree
+(iii) Count the total number of nodes of the Binary Search Tree
+(iv) Count the total number of leaf nodes of the Binary Search Tree
+(v) Count the total number of internal nodes of the Binary Search Tree
+(vi) Find maximum and minimum elements in the Binary Search Tree
+(vii) De-allocate the memory space occupied by Binary Search Tree
+[Use of any Global variable is not allowed.]*/
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct x

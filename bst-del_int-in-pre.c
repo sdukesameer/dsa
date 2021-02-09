@@ -1,3 +1,8 @@
+/*Write C functions to perform the following operations on the Binary Search Tree:
+Deletetion of a given integer from Binary Search Tree.
+Inorder traversal without recursion.
+Preorder traversal without recursion.
+( Use of global pointer is not allowed)*/
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct x

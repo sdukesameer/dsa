@@ -1,3 +1,10 @@
+/*Implement STACK using array with the following 6 function:
+    i. Define structure of STACK.
+    ii. Initialization.
+    iii. PUSH some integers.
+    iv. POP some integers.
+    v. Check the STACK empty or not.
+    vi. Check the STACK full or not.*/
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct
@@ -14,9 +21,16 @@ stack* createstack(unsigned int x)
     ret->arr=(int* )malloc(x * sizeof(int));
     return ret;
 }
-void push(stack* stk, int n)
+int is_full(stack* stk)
 {
     if(stk->top==(stk->size-1))
+        return 1;
+    else
+        return 0;
+}
+void push(stack* stk, int n)
+{
+    if(is_full(stk))
         printf("OVERFLOW!\n");
     else
     {
@@ -24,19 +38,19 @@ void push(stack* stk, int n)
         printf("%d pushed to stack.\n",stk->arr[stk->top]);
     }
 }
-void pop(stack* stk)
+int is_empty(stack* stk)
 {
     if(stk->top==-1)
+        return 1;
+    else
+        return 0;
+}
+void pop(stack* stk)
+{
+    if(is_empty(stk))
         printf("STACK EMPTY!\n");
     else
         printf("%d popped from stack.\n",stk->arr[stk->top--]);
-}
-void peek(stack* stk)
-{
-    if(stk->top==-1)
-        printf("SORRY, STACK EMPTY!\n");
-    else
-        printf("Top element is %d\n",stk->arr[stk->top]);
 }
 int main()
 {
@@ -49,8 +63,7 @@ int main()
         printf("\n");
         printf("1. PUSH\n");
         printf("2. POP\n");
-        printf("3. PEEK\n");
-        printf("4. EXIT\n");
+        printf("3. EXIT\n");
         printf("Enter your choice: ");
         scanf("%d",&ch);
         if (ch==1)
@@ -62,8 +75,6 @@ int main()
         else if(ch==2)
             pop(stk);
         else if(ch==3)
-            peek(stk);
-        else if (ch==4)
         {
             printf("Exitting program, Thank you.\n");
             break;

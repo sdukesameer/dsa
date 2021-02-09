@@ -1,90 +1,112 @@
+/*Write C functions for the following operations on Circular Linked List with Single Pointer:
+#1: Insertion of integer in sorted order
+#2: Insertion of integer in sequential order
+#3: Deletion of a specific integer
+#4: Display the content of a Circular Linked List
+( Use of global variable is not allowed) */
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct x
 {
-    struct x* prev;
     int data;
     struct x* next;
 }node;
+node* createNode(int n)
+{
+    node* newNode=(node*)malloc(sizeof(node));
+    newNode->data=n;
+    newNode->next=NULL;
+    return newNode;
+}
 void sort_insertion(node** head, int n)
 {
-    node* dll=(node*)malloc(sizeof(node));
-    dll->data=n;
-    dll->next=NULL;
-    dll->prev=NULL;
-    if(*head==NULL)
-        *head=dll;
-    else if(dll->data <= (*head)->data)
+    node* cll=createNode(n);
+    if (*head==NULL)
     {
-        (*head)->prev=dll;
-        dll->next=*head;
-        *head=dll;
+        *head=cll;
+        cll->next=cll;
     }
-    else
+    else if((*head)->data >= cll->data)
+    {
+        node* last=*head;
+        while(last->next!=(*head))
+            last=last->next;
+        cll->next=*head;
+        last->next=cll;
+        *head=cll;
+    }
+    else if((*head)->data < cll->data)
     {
         node* temp=*head;
-        while(temp->next != NULL && temp->next->data < dll->data)
+        while(temp->next!=*head && temp->next->data<cll->data)
             temp=temp->next;
-        dll->prev=temp;
-        dll->next=temp->next;
-        temp->next=dll;
-        if(dll->next!=NULL)
-            dll->next->prev=dll;
+        cll->next=temp->next;
+        temp->next=cll;
     }
 }
 void seq_insertion(node** head, int n)
 {
-    node* dll=(node*)malloc(sizeof(node));
-    dll->data=n;
-    dll->next=*head;
-    dll->prev=NULL;
-    if (*head!=NULL)
-        (*head)->prev=dll;
-    *head=dll;
-}
-node* search_node(node* head, int n) 
-{
-    node* dll=head;
-    while (dll!=NULL)
+    node* cll=createNode(n);
+    if(*head==NULL)
     {
-        if(dll->data==n)
-            return dll;
-        dll=dll->next;
+        *head=cll;
+        cll->next=cll;
     }
+    else
+    {
+        cll->next=*head;
+        node* last=*head;
+        while(last->next!=(*head))
+            last=last->next;
+        last->next=cll;
+        *head=cll;
+    }
+}
+node* search(node* head, int n)
+{
+    node* cll=head;
+    do
+    {
+        if(cll->data==n)
+            return cll;
+        cll=cll->next;
+    }
+    while(cll!=head);
     return NULL;
 }
 void deletion(node** head, node* del)
 {
     if (*head==del)
-        *head=del->next;
-    else 
     {
-        if (del->next!=NULL)
-            del->next->prev=del->prev;
-        if (del->prev!=NULL)
-            del->prev->next=del->next;
+        if((*head)->next==*head)
+            *head=NULL;
+        else
+        {
+            node* last=*head;
+            while(last->next!=(*head))
+                last=last->next;
+            *head=(*head)->next;
+            last->next=*head;
+        }
+    }
+    else
+    {
+        node* temp=*head;
+        while(temp->next!=del)
+            temp=temp->next;
+        temp->next=del->next;
     }
     free(del);
 }
-void printforward(node* head)
+void print(node* head)
 {
-    node* dll=head;
-    while (dll!=NULL)
+    node* temp=head;
+    do
     {
-        printf("%d  ",dll->data);
-        dll=dll->next;
+        printf("%d ",temp->data);
+        temp=temp->next;
     }
-}
-void printreversed(node* head)
-{
-    node* dll=head;
-    while (dll->next!=NULL)
-        dll=dll->next;
-    while(dll!=NULL)
-    {
-        printf("%d  ",dll->data);
-        dll=dll->prev;
-    }
+    while(temp!=head);
 }
 int main()
 {
@@ -106,9 +128,8 @@ int main()
                 int c;
                 printf("\n1. ENTER AN INTEGER\n");
                 printf("2. DELETE AN INTEGER\n");
-                printf("3. TRAVERSAL IN FORWARD DIRECTION\n");
-                printf("4. TRAVERSAL IN REVERSE DIRECTION\n");
-                printf("5. EXIT SORTED ORDER INSERTION\n");
+                printf("3. DISPLAY CONTENT OF CIRCULAR LINK-LIST\n");
+                printf("4. EXIT SORTED ORDER INSERTION\n");
                 printf("Enter your choice: ");
                 scanf("%d",&c);
                 if(c==1)
@@ -121,86 +142,14 @@ int main()
                 }
                 else if(c==2)
                 {
-                    int n;
-                    printf("\nPlease enter the element to be deleted: ");
-                    scanf("%d",&n);
                     if (head==NULL)
-                        printf("COULDN'T DELETE %d. LIST EMPTY\n",n);
+                        printf("\nCAN'T DELETE. LIST EMPTY\n");
                     else
                     {
-                        node* del_node=search_node(head,n);
-                        if(del_node==NULL)
-                        printf("COULDN'T DELETE %d. NOT FOUND IN LIST.\n",n);
-                        else
-                        {
-                            deletion(&head,del_node);
-                            printf("%d deleted from LIST.\n",n);
-                        }
-                    }
-                }
-                else if (c==3)
-                {
-                    if(head==NULL)
-                        printf("\n\tLIST EMPTY\n");
-                    else
-                    {
-                        printf("\nTRAVERSAL IN FORWARD DIRECTION: \n");
-                        printforward(head);
-                        printf("\n");
-                    }
-                }
-                else if (c==4)
-                {
-                    if(head==NULL)
-                        printf("\n\tLIST EMPTY\n");
-                    else
-                    {
-                        printf("\nTRAVERSAL IN REVERSE DIRECTION: \n");
-                        printreversed(head);
-                        printf("\n");
-                    }
-                }
-                else if (c==5)
-                {
-                    printf("\nExitting Sorted Order Insertion, Thank You.\n");
-                    break;
-                }
-                else
-                    printf("\nINVALID CHOICE! TRY AGAIN.\n");
-            }
-        }
-        else if(ch==2)
-        {
-            printf("\n\tSEQUENTIAL ORDER\n");
-            node* head=NULL;
-            int c;
-            while(1)
-            {
-                printf("\n1. ENTER AN INTEGER\n");
-                printf("2. DELETE AN INTEGER\n");
-                printf("3. TRAVERSAL IN FORWARD DIRECTION\n");
-                printf("4. TRAVERSAL IN REVERSE DIRECTION\n");
-                printf("5. EXIT SEQUENTIAL ORDER INSERTION\n");
-                printf("Enter your choice: ");
-                scanf("%d",&c);
-                if(c==1)
-                {
-                    int n;
-                    printf("Please enter an element: ");
-                    scanf("%d",&n);
-                    seq_insertion(&head,n);
-                    printf("%d inserted using SEQUENTIAL ORDER INSERTION.\n",n);
-                }
-                else if(c==2)
-                {
-                    int n;
-                    printf("\nPlease enter the element to be deleted: ");
-                    scanf("%d",&n);
-                    if (head==NULL)
-                        printf("COULDN'T DELETE %d. LIST EMPTY\n",n);
-                    else
-                    {
-                        node* del_node=search_node(head,n);
+                        int n;
+                        printf("\nPlease enter the element to be deleted: ");
+                        scanf("%d",&n);
+                        node* del_node=search(head,n);
                         if(del_node==NULL)
                             printf("COULDN'T DELETE %d. NOT FOUND IN LIST.\n",n);
                         else
@@ -216,23 +165,73 @@ int main()
                         printf("\n\tLIST EMPTY\n");
                     else
                     {
-                        printf("\nTRAVERSAL IN FORWARD DIRECTION: \n");
-                        printforward(head);
+                        printf("\nDISPLAYING CONTENTS OF CIRCULAR LINK-LIST: \n");
+                        print(head);
                         printf("\n");
                     }
                 }
                 else if (c==4)
                 {
+                    printf("\nExitting Sorted Order Insertion, Thank You.\n");
+                    break;
+                }
+                else
+                    printf("\nINVALID CHOICE! TRY AGAIN.\n");
+            }
+        }
+        else if(ch==2)
+        {
+            printf("\n\tSEQUENTIAL ORDER\n");
+            node* head=NULL;
+            int c;
+            while(1)
+            {
+                int c;
+                printf("\n1. ENTER AN INTEGER\n");
+                printf("2. DELETE AN INTEGER\n");
+                printf("3. DISPLAY CONTENT OF CIRCULAR LINK-LIST\n");
+                printf("4. EXIT SEQUENTAIL ORDER INSERTION\n");
+                printf("Enter your choice: ");
+                scanf("%d",&c);
+                if(c==1)
+                {
+                    int n;
+                    printf("Please enter an element: ");
+                    scanf("%d",&n);
+                    seq_insertion(&head,n);
+                    printf("%d inserted using SEQUENTIAL ORDER INSERTION.\n",n);
+                }
+                else if(c==2)
+                {
+                    if (head==NULL)
+                        printf("\nCAN'T DELETE. LIST EMPTY\n");
+                    else
+                    {
+                        int n;
+                        printf("\nPlease enter the element to be deleted: ");
+                        scanf("%d",&n);
+                        node* del_node=search(head,n);
+                        if(del_node==NULL)
+                            printf("COULDN'T DELETE %d. NOT FOUND IN LIST.\n",n);
+                        else
+                        {
+                            deletion(&head,del_node);
+                            printf("%d deleted from LIST.\n",n);
+                        }
+                    }
+                }
+                else if (c==3)
+                {
                     if(head==NULL)
                         printf("\n\tLIST EMPTY\n");
                     else
                     {
-                        printf("\nTRAVERSAL IN REVERSE DIRECTION: \n");
-                        printreversed(head);
+                        printf("\nDISPLAYING CONTENTS OF CIRCULAR LINK-LIST: \n");
+                        print(head);
                         printf("\n");
                     }
                 }
-                else if(c==5)
+                else if (c==4)
                 {
                     printf("\nExitting Sequential Order Insertion, Thank You.\n");
                     break;

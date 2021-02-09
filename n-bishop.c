@@ -1,4 +1,4 @@
-//print all possible combination for n-bishop problem
+//2: n-Bishop Problem: Write a complete C Program to place  n  Bishops on a nXn Chess Board.  
 #include<stdio.h>
 int N;
 void display(int arr[N][N]){//graphical representation

@@ -1,3 +1,4 @@
+//Write a program to insert elements in an array and delete those elements.
 #include<stdio.h>
 #include<stdlib.h>
 int main()

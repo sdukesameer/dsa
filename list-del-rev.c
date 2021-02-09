@@ -1,3 +1,9 @@
+/*Perform the following operations on linked list:
+1. Deletion of a specified integer.
+2. Display the content of the list using a recursive function.
+3. Write a function to Count the elements of the list.
+4. Write function to Reverse the list.
+(No use of global pointer is allowed.)*/
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct s

@@ -1,3 +1,5 @@
+/*Write the programs to implement the following algorithm.
+DFS - Depth-First Search*/
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct{

@@ -1,3 +1,4 @@
+/*Write a C program to evaluate a postfix expression.*/
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>

@@ -1,3 +1,10 @@
+/*Write C functions to implement the following operations on Binary Search Tree containing integer.
+1. Insertion of integer using a Recursive Function
+2. Insertion of integer using an Iterative Function
+3. In-order Traversal  using a Recursive Function
+4.  Pre-order Traversal  using a Recursive Function
+5.  Post-order Traversal  using a Recursive Function
+(Use of Global Pointer is not allowed.)*/
 #include<stdio.h>
 #include<stdlib.h>
 typedef struct x

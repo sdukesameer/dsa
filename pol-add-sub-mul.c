@@ -1,3 +1,7 @@
+/*Write a single C Program to perform the following tasks:
+#1: Addition of twoPolynomials.
+#2: Multiplication of two Polynomials.
+*/
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
